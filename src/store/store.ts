@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware"; // Import the persist middleware
+import { persist } from "zustand/middleware";
 import { Event } from "../types/Event.t";
 
 interface EventStore {
@@ -13,7 +13,6 @@ interface EventStore {
 	toggleComplete: (id: number) => void;
 }
 
-// Use the persist middleware and provide the correct types
 export const useEventStore = create<EventStore>()(
 	persist(
 		(set) => ({
@@ -21,14 +20,14 @@ export const useEventStore = create<EventStore>()(
 				{
 					id: 1,
 					name: "Meeting",
-					date: "2024-10-10",
+					date: "2025-10-10",
 					category: "work",
 					status: "upcoming",
 				},
 				{
 					id: 2,
 					name: "Birthday Party",
-					date: "2024-10-11",
+					date: "2025-10-11",
 					category: "personal",
 					status: "upcoming",
 				},
