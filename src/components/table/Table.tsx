@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import { useEventStore } from "../../store/store";
+import { ToastContainer, toast } from "react-toastify";
 
 interface Event {
 	id: number;
@@ -76,14 +77,48 @@ const EventManager: React.FC = () => {
 	};
 
 	const handleAddOrEditEvent = () => {
+		// Валідація дати
+		const selectedDate = new Date(newEvent.date);
+		const today = new Date();
+		today.setHours(0, 0, 0, 0); // Скидання часу до опівночі
+
+		if (!newEvent.name || !newEvent.date) {
+			toast.error("Please fill in all fields!", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+			return;
+		}
+
+		if (selectedDate < today) {
+			toast.error(
+				"Please select a date that is today or in the future.",
+				{
+					position: "top-right",
+					autoClose: 5000,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					progress: undefined,
+				}
+			);
+
+			return;
+		}
+
 		if (editingEventId !== null) {
 			editEvent(editingEventId, newEvent);
 			setEditingEventId(null);
 		} else {
-			if (newEvent.name && newEvent.date) {
-				addEvent(newEvent);
-			}
+			addEvent(newEvent);
 		}
+
 		setNewEvent({
 			name: "",
 			date: "",
@@ -278,6 +313,7 @@ const EventManager: React.FC = () => {
 					setCurrentPage(value)
 				}
 			/>
+			<ToastContainer />
 		</div>
 	);
 };
