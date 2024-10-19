@@ -1,5 +1,3 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import EventManager from "./components/table/Table";
 import Header from "./components/header/Header";

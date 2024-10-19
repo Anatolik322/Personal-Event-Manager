@@ -1,46 +1,49 @@
-# Getting Started with Create React App
+# Personal Event Manager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a **Personal Event Management Application** built with **React**, **TypeScript**, **MUI**, and **Tailwind CSS**. The application allows users to manage their events, with features such as adding, editing, deleting events, sorting, filtering, and pagination. Event state management is handled using custom hooks. Additionally, the app simulates API requests for events using **Axios**.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+1. **Add Event**: Users can create new events with details such as name, description, category, date, and status.
 
-### `npm start`
+2. **Edit Event**: Users can modify existing events.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+3. **Delete Event**: Events can be removed from the list.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+4. **Sorting**: Users can sort events by name, date, and category.
 
-### `npm test`
+5. **Filtering**: Users can filter events by category (work, personal, leisure).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+6. **Pagination**: Events are displayed with pagination to make navigation easier.
 
-### `npm run build`
+7. **Event Completion**: Users can mark an event as completed.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+8. **Form Validation**: The forms are handle validated using react-toastify for showing errors.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+9. **Data Fetching**: There is custom hook wich fetched using **Axios**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+10. **Event Details Modal**: Displays detailed event information when an event is clicked.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Getting Started
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Prerequisites
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Make sure you have the following installed:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+-   [Node.js](https://nodejs.org/) v14 or later
+-   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-## Learn More
+### Installation
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Clone the repository:
+   git clone https://github.com/Anatolik322/Personal-Event-Manager
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. npm i
+
+3. npm run start
+
+### or wisit deployes wersion
+
+https://personal-event-manager.vercel.app
