@@ -1,9 +1,16 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import EventManager from "./components/table/Table";
+import Header from "./components/header/Header";
 
 function App() {
-	return <div className="App  h-[100px] !bg-black"></div>;
+	return (
+		<div className="Ap">
+			<Header />
+			<EventManager />
+		</div>
+	);
 }
 
 export default App;
