@@ -9,6 +9,8 @@ import {
 	TextField,
 	Select,
 	MenuItem,
+	Typography,
+	Checkbox,
 } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import { useEventStore } from "../../store/store";
@@ -98,7 +100,7 @@ const EventManager: React.FC = () => {
 	};
 
 	return (
-		<div className=" mt-5">
+		<div className=" mt-5 mx-auto w-10/12">
 			<div className=" flex flex-row gap-5 my-3">
 				<TextField
 					label="Event Name"
@@ -111,7 +113,7 @@ const EventManager: React.FC = () => {
 					}
 				/>
 				<TextField
-					label="Event Date"
+					// label="Event Date"
 					type="date"
 					value={newEvent.date}
 					onChange={(e) =>
@@ -139,6 +141,9 @@ const EventManager: React.FC = () => {
 				</Select>
 				<Button
 					variant="contained"
+					sx={{
+						bgcolor: "#485A64",
+					}}
 					onClick={handleAddOrEditEvent}
 				>
 					{editingEventId !== null
@@ -146,7 +151,7 @@ const EventManager: React.FC = () => {
 						: "Add Event"}
 				</Button>
 			</div>
-
+			<Typography>Sort by:</Typography>
 			<div className=" flex flex-row gap-5">
 				<Select
 					value={filterCategory}
@@ -184,7 +189,12 @@ const EventManager: React.FC = () => {
 			</div>
 
 			<Table className=" border w-9/12 rounded-sm mt-10">
-				<TableHead>
+				<TableHead
+					sx={{
+						bgcolor: "#485A64",
+						color: "#f2f2f2",
+					}}
+				>
 					<TableRow>
 						<TableCell>Name</TableCell>
 						<TableCell>Date</TableCell>
@@ -209,18 +219,17 @@ const EventManager: React.FC = () => {
 								{event.status}
 							</TableCell>
 							<TableCell>
-								<Button
-									onClick={() =>
+								<Checkbox
+									checked={
+										event.status ===
+										"completed"
+									}
+									onChange={() =>
 										toggleComplete(
 											event.id
 										)
 									}
-								>
-									{event.status ===
-									"completed"
-										? "Mark Incomplete"
-										: "Mark Complete"}
-								</Button>
+								/>
 								<Button
 									onClick={() =>
 										handleEditClick(
@@ -228,7 +237,10 @@ const EventManager: React.FC = () => {
 										)
 									}
 								>
-									Edit
+									<img
+										className="w-8"
+										src="/images/pencil.png"
+									/>
 								</Button>
 								<Button
 									onClick={() =>
@@ -237,7 +249,10 @@ const EventManager: React.FC = () => {
 										)
 									}
 								>
-									Delete
+									<img
+										className="w-8"
+										src="/images/bin.png"
+									/>
 								</Button>
 							</TableCell>
 						</TableRow>
@@ -246,9 +261,7 @@ const EventManager: React.FC = () => {
 			</Table>
 
 			<Pagination
-				count={Math.ceil(
-					filteredEvents.length / 10
-				)}
+				count={Math.ceil(filteredEvents.length / 5)}
 				page={1}
 				onChange={() => {}}
 			/>
