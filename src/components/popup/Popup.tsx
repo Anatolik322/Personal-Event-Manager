@@ -6,16 +6,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Typography } from "@mui/material";
+import { PopupProps } from "../../types/PopupProps.t";
 
 export default function Popup({
 	open,
 	handleClose,
 	data,
-}: {
-	open: boolean;
-	handleClose: () => void;
-	data: any;
-}) {
+}: PopupProps) {
 	return (
 		<React.Fragment>
 			<Dialog

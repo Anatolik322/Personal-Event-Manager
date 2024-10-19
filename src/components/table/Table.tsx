@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
 	Table,
 	TableBody,
@@ -14,16 +14,11 @@ import {
 } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import { useEventStore } from "../../store/store";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import Popup from "../popup/Popup";
-
-interface Event {
-	id: number;
-	name: string;
-	date: string;
-	category: "work" | "personal" | "other";
-	status: "upcoming" | "completed";
-}
+import { useFilterAndSort } from "../../hooks/useFilterAndSort";
+import { useEventForm } from "../../hooks/useEventForm";
+import { Event } from "../../types/Event.t";
 
 const EventManager: React.FC = () => {
 	const {
@@ -34,16 +29,6 @@ const EventManager: React.FC = () => {
 		toggleComplete,
 	} = useEventStore();
 
-	const [filteredEvents, setFilteredEvents] =
-		useState<Event[]>(events);
-	const [newEvent, setNewEvent] = useState<
-		Omit<Event, "id">
-	>({
-		name: "",
-		date: "",
-		category: "work",
-		status: "upcoming",
-	});
 	const [editingEventId, setEditingEventId] = useState<
 		number | null
 	>(null);
@@ -51,93 +36,23 @@ const EventManager: React.FC = () => {
 		useState<keyof Event>("name");
 	const [filterCategory, setFilterCategory] =
 		useState<string>("all");
-
 	const [currentPage, setCurrentPage] = useState(1);
 	const [isOpen, setIsOpen] = useState(false);
 	const [popupData, setPopupData] = useState({});
+
 	const eventsPerPage = 5;
-
-	useEffect(() => {
-		applyFilterAndSort();
-	}, [events, sortField, filterCategory]);
-
-	const applyFilterAndSort = () => {
-		let filtered = events;
-
-		if (filterCategory !== "all") {
-			filtered = filtered.filter(
-				(event) => event.category === filterCategory
-			);
-		}
-
-		filtered = filtered.sort((a, b) => {
-			if (a[sortField] > b[sortField]) return 1;
-			if (a[sortField] < b[sortField]) return -1;
-			return 0;
+	const filteredEvents = useFilterAndSort(
+		events,
+		sortField,
+		filterCategory
+	);
+	const { newEvent, setNewEvent, handleAddOrEditEvent } =
+		useEventForm({
+			addEvent,
+			editEvent,
+			editingEventId,
+			setEditingEventId,
 		});
-
-		setFilteredEvents(filtered);
-	};
-
-	const handleAddOrEditEvent = () => {
-		const selectedDate = new Date(newEvent.date);
-		const today = new Date();
-		today.setHours(0, 0, 0, 0);
-
-		if (!newEvent.name || !newEvent.date) {
-			toast.error("Please fill in all fields!", {
-				position: "top-right",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
-			return;
-		}
-
-		if (selectedDate < today) {
-			toast.error(
-				"Please select a date that is today or in the future.",
-				{
-					position: "top-right",
-					autoClose: 5000,
-					hideProgressBar: false,
-					closeOnClick: true,
-					pauseOnHover: true,
-					draggable: true,
-					progress: undefined,
-				}
-			);
-
-			return;
-		}
-
-		if (editingEventId !== null) {
-			editEvent(editingEventId, newEvent);
-			setEditingEventId(null);
-		} else {
-			addEvent(newEvent);
-		}
-
-		setNewEvent({
-			name: "",
-			date: "",
-			category: "work",
-			status: "upcoming",
-		});
-	};
-
-	const handleEditClick = (event: Event) => {
-		setEditingEventId(event.id);
-		setNewEvent({
-			name: event.name,
-			date: event.date,
-			category: event.category,
-			status: event.status,
-		});
-	};
 
 	const startIndex = (currentPage - 1) * eventsPerPage;
 	const endIndex = startIndex + eventsPerPage;
@@ -146,15 +61,24 @@ const EventManager: React.FC = () => {
 		endIndex
 	);
 
+	const handleEditClick = (event: Event) => {
+		setNewEvent({
+			name: event.name,
+			date: event.date,
+			category: event.category,
+			status: event.status,
+		});
+		setEditingEventId(event.id);
+	};
+
 	return (
 		<div className="mt-5 mx-auto w-10/12">
 			<Popup
 				open={isOpen}
-				handleClose={() => {
-					setIsOpen(false);
-				}}
+				handleClose={() => setIsOpen(false)}
 				data={popupData}
 			/>
+
 			<div className="flex flex-row gap-5 my-3">
 				<TextField
 					label="Event Name"
@@ -194,9 +118,7 @@ const EventManager: React.FC = () => {
 				</Select>
 				<Button
 					variant="contained"
-					sx={{
-						bgcolor: "#485A64",
-					}}
+					sx={{ bgcolor: "#485A64" }}
 					onClick={handleAddOrEditEvent}
 				>
 					{editingEventId !== null
@@ -204,6 +126,7 @@ const EventManager: React.FC = () => {
 						: "Add Event"}
 				</Button>
 			</div>
+
 			<Typography>Sort by:</Typography>
 			<div className="flex flex-row gap-5">
 				<Select
@@ -290,27 +213,31 @@ const EventManager: React.FC = () => {
 									}
 								/>
 								<Button
-									onClick={() =>
+									onClick={(e) => {
+										e.stopPropagation();
 										handleEditClick(
 											event
-										)
-									}
+										);
+									}}
 								>
 									<img
-										className="w-8"
 										src="/images/pencil.png"
+										alt="pencil"
+										className="w-6 cursor-pointer"
 									/>
 								</Button>
 								<Button
-									onClick={() =>
+									onClick={(e) => {
+										e.stopPropagation();
 										deleteEvent(
 											event.id
-										)
-									}
+										);
+									}}
 								>
 									<img
-										className="w-8"
 										src="/images/bin.png"
+										alt="bin"
+										className="w-6 cursor-pointer"
 									/>
 								</Button>
 							</TableCell>
