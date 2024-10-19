@@ -1,12 +1,6 @@
 import { create } from "zustand";
-
-interface Event {
-	id: number;
-	name: string;
-	date: string;
-	category: "work" | "personal" | "other";
-	status: "upcoming" | "completed";
-}
+import { persist } from "zustand/middleware"; // Import the persist middleware
+import { Event } from "../types/Event.t";
 
 interface EventStore {
 	events: Event[];
@@ -19,60 +13,71 @@ interface EventStore {
 	toggleComplete: (id: number) => void;
 }
 
-export const useEventStore = create<EventStore>((set) => ({
-	events: [
-		{
-			id: 1,
-			name: "Meeting",
-			date: "2024-10-10",
-			category: "work",
-			status: "upcoming",
-		},
-		{
-			id: 2,
-			name: "Birthday Party",
-			date: "2024-10-11",
-			category: "personal",
-			status: "upcoming",
-		},
-	],
-
-	addEvent: (event) =>
-		set((state) => ({
+// Use the persist middleware and provide the correct types
+export const useEventStore = create<EventStore>()(
+	persist(
+		(set) => ({
 			events: [
-				...state.events,
-				{ ...event, id: Date.now() },
+				{
+					id: 1,
+					name: "Meeting",
+					date: "2024-10-10",
+					category: "work",
+					status: "upcoming",
+				},
+				{
+					id: 2,
+					name: "Birthday Party",
+					date: "2024-10-11",
+					category: "personal",
+					status: "upcoming",
+				},
 			],
-		})),
 
-	editEvent: (id, updatedEvent) =>
-		set((state) => ({
-			events: state.events.map((event) =>
-				event.id === id
-					? { ...event, ...updatedEvent }
-					: event
-			),
-		})),
+			addEvent: (event) =>
+				set((state) => ({
+					events: [
+						...state.events,
+						{ ...event, id: Date.now() },
+					],
+				})),
 
-	deleteEvent: (id) =>
-		set((state) => ({
-			events: state.events.filter(
-				(event) => event.id !== id
-			),
-		})),
+			editEvent: (id, updatedEvent) =>
+				set((state) => ({
+					events: state.events.map((event) =>
+						event.id === id
+							? { ...event, ...updatedEvent }
+							: event
+					),
+				})),
 
-	toggleComplete: (id) =>
-		set((state) => ({
-			events: state.events.map((event) =>
-				event.id === id
-					? {
-							...event,
-							status:
-								event.status === "completed"
-									? "upcoming"
-									: "completed",
-					  }
-					: event
-			),
-		})),
-}));
+			deleteEvent: (id) =>
+				set((state) => ({
+					events: state.events.filter(
+						(event) => event.id !== id
+					),
+				})),
+
+			toggleComplete: (id) =>
+				set((state) => ({
+					events: state.events.map((event) =>
+						event.id === id
+							? {
+									...event,
+									status:
+										event.status ===
+										"completed"
+											? "upcoming"
+											: "completed",
+							  }
+							: event
+					),
+				})),
+		}),
+		{
+			name: "event-store",
+			//@ts-ignore
+			getStorage: () => localStorage,
+		}
+	)
+);

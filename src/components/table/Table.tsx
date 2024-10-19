@@ -213,6 +213,9 @@ const EventManager: React.FC = () => {
 													event.id
 												)
 											}
+											onClick={(e) =>
+												e.stopPropagation()
+											}
 										/>
 										<Button
 											sx={{
