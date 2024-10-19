@@ -50,6 +50,9 @@ const EventManager: React.FC = () => {
 	const [filterCategory, setFilterCategory] =
 		useState<string>("all");
 
+	const [currentPage, setCurrentPage] = useState(1);
+	const eventsPerPage = 5;
+
 	useEffect(() => {
 		applyFilterAndSort();
 	}, [events, sortField, filterCategory]);
@@ -99,9 +102,16 @@ const EventManager: React.FC = () => {
 		});
 	};
 
+	const startIndex = (currentPage - 1) * eventsPerPage;
+	const endIndex = startIndex + eventsPerPage;
+	const currentEvents = filteredEvents.slice(
+		startIndex,
+		endIndex
+	);
+
 	return (
-		<div className=" mt-5 mx-auto w-10/12">
-			<div className=" flex flex-row gap-5 my-3">
+		<div className="mt-5 mx-auto w-10/12">
+			<div className="flex flex-row gap-5 my-3">
 				<TextField
 					label="Event Name"
 					value={newEvent.name}
@@ -113,7 +123,6 @@ const EventManager: React.FC = () => {
 					}
 				/>
 				<TextField
-					// label="Event Date"
 					type="date"
 					value={newEvent.date}
 					onChange={(e) =>
@@ -152,7 +161,7 @@ const EventManager: React.FC = () => {
 				</Button>
 			</div>
 			<Typography>Sort by:</Typography>
-			<div className=" flex flex-row gap-5">
+			<div className="flex flex-row gap-5">
 				<Select
 					value={filterCategory}
 					onChange={(e) =>
@@ -188,7 +197,7 @@ const EventManager: React.FC = () => {
 				</Select>
 			</div>
 
-			<Table className=" border w-9/12 rounded-sm mt-10">
+			<Table className="border w-9/12 rounded-sm mt-10">
 				<TableHead
 					sx={{
 						bgcolor: "#485A64",
@@ -204,7 +213,7 @@ const EventManager: React.FC = () => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{filteredEvents.map((event) => (
+					{currentEvents.map((event) => (
 						<TableRow key={event.id}>
 							<TableCell>
 								{event.name}
@@ -261,9 +270,13 @@ const EventManager: React.FC = () => {
 			</Table>
 
 			<Pagination
-				count={Math.ceil(filteredEvents.length / 5)}
-				page={1}
-				onChange={() => {}}
+				count={Math.ceil(
+					filteredEvents.length / eventsPerPage
+				)}
+				page={currentPage}
+				onChange={(event, value) =>
+					setCurrentPage(value)
+				}
 			/>
 		</div>
 	);
