@@ -15,6 +15,7 @@ import {
 import Pagination from "@mui/material/Pagination";
 import { useEventStore } from "../../store/store";
 import { ToastContainer, toast } from "react-toastify";
+import Popup from "../popup/Popup";
 
 interface Event {
 	id: number;
@@ -52,6 +53,8 @@ const EventManager: React.FC = () => {
 		useState<string>("all");
 
 	const [currentPage, setCurrentPage] = useState(1);
+	const [isOpen, setIsOpen] = useState(false);
+	const [popupData, setPopupData] = useState({});
 	const eventsPerPage = 5;
 
 	useEffect(() => {
@@ -77,10 +80,9 @@ const EventManager: React.FC = () => {
 	};
 
 	const handleAddOrEditEvent = () => {
-		// Валідація дати
 		const selectedDate = new Date(newEvent.date);
 		const today = new Date();
-		today.setHours(0, 0, 0, 0); // Скидання часу до опівночі
+		today.setHours(0, 0, 0, 0);
 
 		if (!newEvent.name || !newEvent.date) {
 			toast.error("Please fill in all fields!", {
@@ -146,6 +148,13 @@ const EventManager: React.FC = () => {
 
 	return (
 		<div className="mt-5 mx-auto w-10/12">
+			<Popup
+				open={isOpen}
+				handleClose={() => {
+					setIsOpen(false);
+				}}
+				data={popupData}
+			/>
 			<div className="flex flex-row gap-5 my-3">
 				<TextField
 					label="Event Name"
@@ -249,7 +258,13 @@ const EventManager: React.FC = () => {
 				</TableHead>
 				<TableBody>
 					{currentEvents.map((event) => (
-						<TableRow key={event.id}>
+						<TableRow
+							key={event.id}
+							onClick={() => {
+								setPopupData(event);
+								setIsOpen(true);
+							}}
+						>
 							<TableCell>
 								{event.name}
 							</TableCell>
