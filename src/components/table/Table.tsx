@@ -72,14 +72,14 @@ const EventManager: React.FC = () => {
 	};
 
 	return (
-		<div className="mt-5 mx-auto w-10/12">
+		<div className="mt-5 mx-auto w-11/12 ">
 			<Popup
 				open={isOpen}
 				handleClose={() => setIsOpen(false)}
 				data={popupData}
 			/>
 
-			<div className="flex flex-row gap-5 my-3">
+			<div className="flex flex-row gap-5 my-3 flex-wrap">
 				<TextField
 					label="Event Name"
 					value={newEvent.name}
@@ -164,87 +164,101 @@ const EventManager: React.FC = () => {
 				</Select>
 			</div>
 
-			<Table className="border w-9/12 rounded-sm mt-10">
-				<TableHead
-					sx={{
-						bgcolor: "#485A64",
-						color: "#f2f2f2",
-					}}
-				>
-					<TableRow>
-						<TableCell>Name</TableCell>
-						<TableCell>Date</TableCell>
-						<TableCell>Category</TableCell>
-						<TableCell>Status</TableCell>
-						<TableCell>Actions</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{currentEvents.map((event) => (
-						<TableRow
-							key={event.id}
-							onClick={() => {
-								setPopupData(event);
-								setIsOpen(true);
-							}}
-						>
-							<TableCell>
-								{event.name}
-							</TableCell>
-							<TableCell>
-								{event.date}
-							</TableCell>
-							<TableCell>
-								{event.category}
-							</TableCell>
-							<TableCell>
-								{event.status}
-							</TableCell>
-							<TableCell>
-								<Checkbox
-									checked={
-										event.status ===
-										"completed"
-									}
-									onChange={() =>
-										toggleComplete(
-											event.id
-										)
-									}
-								/>
-								<Button
-									onClick={(e) => {
-										e.stopPropagation();
-										handleEditClick(
-											event
-										);
-									}}
-								>
-									<img
-										src="/images/pencil.png"
-										alt="pencil"
-										className="w-6 cursor-pointer"
-									/>
-								</Button>
-								<Button
-									onClick={(e) => {
-										e.stopPropagation();
-										deleteEvent(
-											event.id
-										);
-									}}
-								>
-									<img
-										src="/images/bin.png"
-										alt="bin"
-										className="w-6 cursor-pointer"
-									/>
-								</Button>
-							</TableCell>
+			<div className="overflow-x-auto">
+				<Table className="border rounded-sm mt-10 w-full sm:w-[350px]">
+					<TableHead
+						sx={{
+							bgcolor: "#485A64",
+							color: "#f2f2f2",
+						}}
+					>
+						<TableRow>
+							<TableCell>Name</TableCell>
+							<TableCell>Date</TableCell>
+							<TableCell>Category</TableCell>
+							<TableCell>Status</TableCell>
+							<TableCell>Actions</TableCell>
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+					</TableHead>
+					<TableBody>
+						{currentEvents.map((event) => (
+							<TableRow
+								key={event.id}
+								onClick={() => {
+									setPopupData(event);
+									setIsOpen(true);
+								}}
+							>
+								<TableCell>
+									{event.name}
+								</TableCell>
+								<TableCell>
+									{event.date}
+								</TableCell>
+								<TableCell>
+									{event.category}
+								</TableCell>
+								<TableCell>
+									{event.status}
+								</TableCell>
+								<TableCell>
+									<div className="flex items-center space-x-2">
+										<Checkbox
+											checked={
+												event.status ===
+												"completed"
+											}
+											onChange={() =>
+												toggleComplete(
+													event.id
+												)
+											}
+										/>
+										<Button
+											sx={{
+												width: "24px",
+											}}
+											onClick={(
+												e
+											) => {
+												e.stopPropagation();
+												handleEditClick(
+													event
+												);
+											}}
+										>
+											<img
+												src="/images/pencil.png"
+												alt="pencil"
+												className="w-6 cursor-pointer"
+											/>
+										</Button>
+										<Button
+											sx={{
+												width: "24px",
+											}}
+											onClick={(
+												e
+											) => {
+												e.stopPropagation();
+												deleteEvent(
+													event.id
+												);
+											}}
+										>
+											<img
+												src="/images/bin.png"
+												alt="bin"
+												className="w-6 cursor-pointer"
+											/>
+										</Button>
+									</div>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</div>
 
 			<Pagination
 				count={Math.ceil(
